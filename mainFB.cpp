@@ -20,147 +20,162 @@ void printChessboard(int chess[8][8])
 
 bool recursion(int chess[8][8], const int queenRow, const int queenCol, int count)
 {
-    // Base case or recursive logic can be implemented here
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
             if (chess[i][j] == 0)
             {
-                // Example logic: mark the cell as visited
-                chess[i][j] = -1; // Marking the cell as visited
+                chess[i][j] = -1;
                 count++;
-                // #pragma omp parallel for
+
+                // Vertical ↓
                 for (int row = i + 1; row < 8; row++)
-                {
                     chess[row][j] = chess[row][j] + 1;
-                }
 
+                // Vertical ↑
                 for (int row = i - 1; row >= 0; row--)
-                {
                     chess[row][j] = chess[row][j] + 1;
-                }
 
-                // #pragma omp parallel for
+                // Horizontal →
                 for (int column = j + 1; column < 8; column++)
-                {
                     chess[i][column] = chess[i][column] + 1;
-                }
 
+                // Horizontal ←
                 for (int column = j - 1; column >= 0; column--)
-                {
                     chess[i][column] = chess[i][column] + 1;
-                }
-                // #pragma omp parallel for
 
-                for (int row = i + 1, column = j + 1; row < 8 && column < 8; row++, column++)
-                {
-                    chess[row][column] = chess[row][column] + 1; // Diagonal increment
-                }
+                //  DIAGONALES ARREGLADAS 
 
-                //#pragma omp parallel for
-                for (int row = i - 1, column = j - 1; row >= 0 && column >= 0; row--, column--)
+                // ↘ diagonal abajo-derecha
+                for (int k = 1; k < 8; k++)
                 {
-                    chess[row][column] = chess[row][column] + 1; // Diagonal increment
+                    int row = i + k;
+                    int column = j + k;
+                    if (row < 8 && column < 8)
+                        chess[row][column] += 1;
                 }
 
-                //#pragma omp parallel for
-                for (int row = i + 1, column = j - 1; row <8 && column >= 0; row++, column--)
+                // ↖ diagonal arriba-izquierda
+                for (int k = 1; k < 8; k++)
                 {
-                    chess[row][column] = chess[row][column] + 1; // Anti-diagonal increment
+                    int row = i - k;
+                    int column = j - k;
+                    if (row >= 0 && column >= 0)
+                        chess[row][column] += 1;
                 }
 
-                //#pragma omp parallel for
-                for (int row = i - 1, column = j + 1; row >= 0 && column < 8; row--, column++)
+                // ↙ diagonal abajo-izquierda
+                for (int k = 1; k < 8; k++)
                 {
-                    chess[row][column] = chess[row][column] + 1; // Anti-diagonal increment
+                    int row = i + k;
+                    int column = j - k;
+                    if (row < 8 && column >= 0)
+                        chess[row][column] += 1;
                 }
+
+                // ↗ diagonal arriba-derecha
+                for (int k = 1; k < 8; k++)
+                {
+                    int row = i - k;
+                    int column = j + k;
+                    if (row >= 0 && column < 8)
+                        chess[row][column] += 1;
+                }
+
+                //  FIN DE BUCLES DIAGONALES
 
                 if (count == 8)
                 {
-                    return true; // Base case: all queens are placed successfully
+                    return true;
                 }
                 if (recursion(chess, i, j, count))
                 {
-                    return true; // If recursion returns true, propagate the success
+                    return true;
                 }
                 else
                 {
-                    chess[i][j] = 0; // Backtrack: unmark the cell
-                    count--;         // Decrement the count
-                                     // Print the chessboard after backtracking
+                    chess[i][j] = 0;
+                    count--;
+
+                    // Vertical ↓
                     for (int row = i + 1; row < 8; row++)
-                    {
                         chess[row][j] = chess[row][j] - 1;
-                    }
 
+                    // Vertical ↑
                     for (int row = i - 1; row >= 0; row--)
-                    {
                         chess[row][j] = chess[row][j] - 1;
-                    }
 
-                    // #pragma omp parallel for
+                    // Horizontal →
                     for (int column = j + 1; column < 8; column++)
-                    {
                         chess[i][column] = chess[i][column] - 1;
-                    }
 
+                    // Horizontal ←
                     for (int column = j - 1; column >= 0; column--)
-                    {
                         chess[i][column] = chess[i][column] - 1;
-                    }
 
-                    //#pragma omp parallel for
-                    for (int row = i + 1, column = j + 1; row < 8 && column < 8; row++, column++)
+                    // 🔽🔽🔽 DIAGONALES BACKTRACK 🔽🔽🔽
+
+                    // ↘ diagonal abajo-derecha
+                    for (int k = 1; k < 8; k++)
                     {
-                        chess[row][column] = chess[row][column] - 1; // Diagonal increment
+                        int row = i + k;
+                        int column = j + k;
+                        if (row < 8 && column < 8)
+                            chess[row][column] -= 1;
                     }
 
-                    //#pragma omp parallel for
-                    for (int row = i - 1, column = j - 1; row >= 0 && column >= 0; row--, column--)
+                    // ↖ diagonal arriba-izquierda
+                    for (int k = 1; k < 8; k++)
                     {
-                        chess[row][column] = chess[row][column] - 1; // Diagonal increment
+                        int row = i - k;
+                        int column = j - k;
+                        if (row >= 0 && column >= 0)
+                            chess[row][column] -= 1;
                     }
 
-
-                    //#pragma omp parallel for
-                    for (int row = i + 1, column = j - 1; row < 8 && column >= 0; row++, column--)
+                    // ↙ diagonal abajo-izquierda
+                    for (int k = 1; k < 8; k++)
                     {
-                        chess[row][column] = chess[row][column] - 1; // Anti-diagonal increment
+                        int row = i + k;
+                        int column = j - k;
+                        if (row < 8 && column >= 0)
+                            chess[row][column] -= 1;
                     }
 
-                    //#pragma omp parallel for
-                    for (int row = i - 1, column = j + 1; row >= 0 && column < 8; row--, column++)
+                    // ↗ diagonal arriba-derecha
+                    for (int k = 1; k < 8; k++)
                     {
-                        chess[row][column] = chess[row][column] - 1; // Anti-diagonal increment
+                        int row = i - k;
+                        int column = j + k;
+                        if (row >= 0 && column < 8)
+                            chess[row][column] -= 1;
                     }
+
+                    // 🔼🔼🔼 FIN DE BACKTRACK 🔼🔼🔼
                 }
-                // You can add more logic here to handle the recursion or backtracking
             }
         }
     }
-    return false; // Placeholder return value
+    return false;
 }
 
 int main()
 {
     auto inicio = high_resolution_clock::now();
-    int chess[8][8]; // Declare a 2D array to represent the chessboard
-
-    // #pragma omp parallel for collapse(2)
+    int chess[8][8];
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
         {
-            chess[i][j] = 0; // Initialize the chessboard with 0s
+            chess[i][j] = 0;
         }
     }
+    recursion(chess, 0, 0, 0);
+    printChessboard(chess);
 
-    recursion(chess, 0, 0, 0); // Start the recursion from the first cell
-    printChessboard(chess);    // Print the initial chessboard state
     auto fin = high_resolution_clock::now();
     auto duracion = duration_cast<milliseconds>(fin - inicio);
-
     cout << "Tiempo: " << duracion.count() << " ms\n";
     return 0;
 }
