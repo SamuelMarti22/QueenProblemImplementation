@@ -162,7 +162,7 @@ bool recursion(int chess[8][8], const int queenRow, const int queenCol, int coun
 
 int main()
 {
-    auto inicio = high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     int chess[8][8];
     for (int i = 0; i < 8; i++)
     {
@@ -174,8 +174,9 @@ int main()
     recursion(chess, 0, 0, 0);
     printChessboard(chess);
 
-    auto fin = high_resolution_clock::now();
-    auto duracion = duration_cast<milliseconds>(fin - inicio);
-    cout << "Tiempo: " << duracion.count() << " ms\n";
+    auto end = std::chrono::high_resolution_clock::now();   // ⏱ Fin
+
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start);
+    std::cout << "Tiempo de ejecución: " << duration.count() << " ns\n";
     return 0;
 }
